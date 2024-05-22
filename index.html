@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Engineer Salaries</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+    <style>
+        #detailsTable {
+            margin-top: 20px;
+            display: none;
+        }
+        #lineGraph {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>ML Engineer Salaries (2020 - 2024)</h1>
+
+    <div id="lineGraph"></div>
+
+    <table id="mainTable" class="display">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Number of Total Jobs</th>
+                <th>Average Salary (USD)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be inserted here by JavaScript -->
+        </tbody>
+    </table>
+
+    <h2>Job Titles and Counts for Selected Year</h2>
+    <table id="detailsTable" class="display">
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Number of Jobs</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Detailed rows will be inserted here by JavaScript -->
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist@2.3.0"></script>
+    <script>
+        $(document).ready(function() {
+            const mainTableData = [
+                [2020, 75, 102250.87],
+                [2021, 218, 99922.07],
+                [2022, 1655, 134349.50],
+                [2023, 8519, 153732.66],
+                [2024, 6027, 150643.25]
+            ];
+
+            const detailsData = {
+                2020: [
+                    ["Data Scientist", 50],
+                    ["ML Engineer", 25]
+                ],
+                2021: [
+                    ["Data Scientist", 150],
+                    ["ML Engineer", 68]
+                ],
+                2022: [
+                    ["Data Scientist", 1000],
+                    ["ML Engineer", 655]
+                ],
+                2023: [
+                    ["Data Scientist", 5000],
+                    ["ML Engineer", 3519]
+                ],
+                2024: [
+                    ["Data Scientist", 3500],
+                    ["ML Engineer", 2527]
+                ]
+            };
+
+            // Initialize the main table
+            const mainTable = $('#mainTable').DataTable({
+                data: mainTableData,
+                columns: [
+                    { title: "Year" },
+                    { title: "Number of Total Jobs" },
+                    { title: "Average Salary (USD)" }
+                ]
+            });
+
+            // Plot the line graph
+            const lineGraphData = {
+                x: mainTableData.map(row => row[0]),
+                y: mainTableData.map(row => row[1]),
+                type: 'scatter',
+                mode: 'lines+markers',
+                marker: { color: 'blue' }
+            };
+
+            Plotly.newPlot('lineGraph', [lineGraphData], {
+                title: 'Number of Total Jobs from 2020 to 2024',
+                xaxis: { title: 'Year' },
+                yaxis: { title: 'Number of Total Jobs' }
+            });
+
+            // Add click event listener to main table rows
+            $('#mainTable tbody').on('click', 'tr', function () {
+                const data = mainTable.row(this).data();
+                const year = data[0];
+                const yearData = detailsData[year];
+
+                $('#detailsTable').DataTable({
+                    destroy: true,
+                    data: yearData,
+                    columns: [
+                        { title: "Job Title" },
+                        { title: "Number of Jobs" }
+                    ]
+                });
+
+                $('#detailsTable').show();
+            });
+        });
+    </script>
+</body>
+</html>
